@@ -1,0 +1,36 @@
+<html>
+<body>
+    <h3>Chat</h3>
+    <form id="form">
+        <input type="submit" value="Send">
+        <input type="text" id="msg">
+    </form>
+    <pre id="output"></pre>
+</body>
+
+<script>
+    var msg = document.getElementById("msg");
+    document.getElementById("form").onsubmit = function () {
+        if(!conn) {
+            return false;
+        }
+        if (!msg.value) {
+            return false;
+        }
+        conn.send(msg.value);
+        msg.value = "";
+        return false;
+    }
+
+    url = 'ws://'+document.location.host + location.pathname + "/ws";
+    conn = new WebSocket(url);
+    conn.onmessage = function(evt){
+        var messages = evt.data.split('\n');
+        for (var i=0; i< messages.length; i++) {
+            var item = document.createElement("div");
+            item.innerText = messages[i];
+            output.appendChild(item);
+        }
+    }
+</script>
+</html>

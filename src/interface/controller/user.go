@@ -2,6 +2,7 @@ package controller
 
 
 import (
+	"fmt"
 	"github.com/taise-hub/webchat/src/domain/model"
 	"github.com/taise-hub/webchat/src/usecase"
 	"github.com/taise-hub/webchat/src/interface/database"
@@ -80,4 +81,24 @@ func (con *userController) Logout(c *gin.Context) {
 	session.Clear()
 	session.Save()
 	c.Redirect(302, "/login")
+}
+
+func (con *userController) GetChat(c *gin.Context) {
+	c.HTML(200, "chat.html", nil)
+}
+
+func (con *userController) WsChat(c *gin.Context, hub *usecase.Hub) {
+	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	client := &usecase.Client{Hub: hub, Conn: conn, Send: make(chan []byte, 256)}
+	client.Hub.Register <- client
+	//clientがconn.ReadMessage()したら、hubに通知して各clientに流し込む.
+	session := sessions.Default(c)
+	user, _ := con.getByEmail(session.Get("email").(string))
+	go client.Listen(user.Name)
+	go client.Write()
+	
 }

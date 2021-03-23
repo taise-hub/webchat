@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/taise-hub/webchat/src/usecase"
 	"gorm.io/gorm"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/sessions"
@@ -13,6 +14,8 @@ func Init(db *gorm.DB) {
 	userController := NewUserController(db)
 	store := cookie.NewStore([]byte("secret"))
 	router.Use(sessions.Sessions("SSID", store))
+	hub := usecase.NewHub()
+	go hub.Run()
 
 	router.GET("/signup", userController.GetSignUp)
 	router.POST("/signup", userController.PostSignUp)
@@ -25,6 +28,11 @@ func Init(db *gorm.DB) {
 	{
 		service.GET("/", userController.GetHome)
 		service.POST("/logout", userController.Logout)
+		//web socket chat
+		service.GET("/chat", userController.GetChat)
+		service.GET("/chat/ws", func(c *gin.Context) {
+			userController.WsChat(c, hub)
+		})
 	}
 
 	router.Run(":8080")
@@ -33,7 +41,7 @@ func Init(db *gorm.DB) {
 //TODO:middlewareの正しい作りかたを調べる。
 func LoginCheck(c *gin.Context) {
 	session := sessions.Default(c)
-	user := session.Get("userName")
+	user := session.Get("email")
 	if user == nil {
 		c.Redirect(302, "/login")
 	}

@@ -22,7 +22,7 @@ func (c *Config) setUpDsn() string {
 
 func NewConfig() *Config {
 	return &Config {
-		User: "",
+		User: "root",
 		Password: "taise",
 		Server: "localhost",
 		Port: 3306,

@@ -5,16 +5,11 @@ import (
 	"github.com/taise-hub/webchat/src/domain/model"
 )
 
-type UserRepository interface {
-	GetByEmail(string) (*model.User, error)
-	Create(*model.User) error
-}
-
 type userRepository struct {
 	db *gorm.DB
 }
 
-func NewUserRepository(db *gorm.DB) UserRepository {
+func NewUserRepository(db *gorm.DB) *userRepository {
 	return &userRepository {
 		db: db,
 	}

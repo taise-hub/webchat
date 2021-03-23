@@ -2,10 +2,11 @@ package controller
 
 
 import (
-	"gorm.io/gorm"
 	"github.com/taise-hub/webchat/src/domain/model"
 	"github.com/taise-hub/webchat/src/usecase"
 	"github.com/taise-hub/webchat/src/interface/database"
+	"gorm.io/gorm"
+	"github.com/gin-gonic/gin"
 )
 
 type userController struct {
@@ -28,14 +29,36 @@ func (con *userController) GetByEmail(email string) (*model.User, error) {
 	return user, nil
 }
 
-func (con *userController) Create(email string, name string, password string) {
-	user := &model.User {
-		Email: email,
-		Name: name,
-		Password: password,
-	}
-	err := con.Usecase.Create(user)
+func (con *userController) GetSignUp(c *gin.Context) {
+	c.HTML(200, "signup.html", nil)
+} 
+
+func (con *userController) PostSignUp(c *gin.Context) {
+	email := c.PostForm("email")
+	name := c.PostForm("name")
+	password := c.PostForm("password")
+	err := con.Usecase.Create(email, name, password)
 	if err != nil {
-		panic(err) //TODO:正しいerrorハンドリングを考える
+		c.HTML(400, "signup.html", gin.H{"err": "すでに登録されたメールアドレスです"})
+		return
 	}
+	c.Redirect(302, "/login")
+}
+
+func (con *userController) GetLogin(c *gin.Context) {
+	c.HTML(200, "login.html", nil)
+}
+
+func (con *userController) PostLogin(c *gin.Context) {
+	email := c.PostForm("email")
+	password := c.PostForm("password")
+	ok, err := con.Usecase.Login(email, password)
+	if err != nil {
+		c.JSON(500, "Internal Server Error")
+	}
+	if !ok {
+		c.HTML(400, "login.html", nil)
+	}
+	//TODO: セッション管理を追加
+	c.HTML(200, "home.html", nil)
 }

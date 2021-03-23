@@ -8,13 +8,11 @@ import (
 func Init(db *gorm.DB) {
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
-	// userController := NewUserController(db)
+	userController := NewUserController(db)
 
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H {
-			"hello": "world",
-		})
-	})
+	router.GET("/signup", userController.GetSignUp)
+	router.POST("/signup", userController.PostSignUp)
+	router.GET("/login", userController.GetLogin)
 
 	router.Run(":8080")
 }

@@ -1,6 +1,7 @@
 package infrastructure
 
 import (
+	"os"
 	"fmt"
 	"gorm.io/gorm"
 	"gorm.io/driver/mysql"
@@ -22,11 +23,11 @@ func (c *Config) setUpDsn() string {
 
 func NewConfig() *Config {
 	return &Config {
-		User: "root",
-		Password: "taise",
-		Server: "localhost",
+		User: os.Getenv("MYSQL_USER"),
+		Password: os.Getenv("MYSQL_PASSWORD"),
+		Server: os.Getenv("MYSQL_HOST"),
 		Port: 3306,
-		DBName: "chat_db",
+		DBName: os.Getenv("MYSQL_DATABASE"),
 	}
 }
 

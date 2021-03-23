@@ -2,7 +2,7 @@ package router
 
 import (
 	"fmt"
-	"github.com/taise-hub/webchat/src/usecase"
+	"github.com/taise-hub/webchat/src/chat"
 	"github.com/taise-hub/webchat/src/interface/controller"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/sessions"
@@ -64,13 +64,13 @@ func GetChat(c *gin.Context) {
 	c.HTML(200, "chat.html", nil)
 }
 
-func WsChat(c *gin.Context, uCon *controller.UserController , hub *usecase.Hub) {
-	conn, err := usecase.Upgrader.Upgrade(c.Writer, c.Request, nil)
+func WsChat(c *gin.Context, uCon *controller.UserController , hub *chat.Hub) {
+	conn, err := chat.Upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	client := &usecase.Client{Hub: hub, Conn: conn, Send: make(chan []byte, 256)}
+	client := &chat.Client{Hub: hub, Conn: conn, Send: make(chan []byte, 256)}
 	client.Hub.Register <- client
 	//clientがconn.ReadMessage()したら、hubに通知して各clientに流し込む.
 	session := sessions.Default(c)

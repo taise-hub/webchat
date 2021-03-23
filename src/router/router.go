@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/taise-hub/webchat/src/usecase"
+	"github.com/taise-hub/webchat/src/chat"
 	"github.com/taise-hub/webchat/src/interface/controller"
 	"gorm.io/gorm"
 	"github.com/gin-gonic/gin"
@@ -15,7 +15,7 @@ func Init(db *gorm.DB) {
 	userController := controller.NewUserController(db)
 	store := cookie.NewStore([]byte("secret"))
 	router.Use(sessions.Sessions("SSID", store))
-	hub := usecase.NewHub()
+	hub := chat.NewHub()
 	go hub.Run()
 
 	router.GET("/signup", GetSignUp)
@@ -41,7 +41,6 @@ func Init(db *gorm.DB) {
 			WsChat(c, userController, hub)
 		})
 	}
-
 	router.Run(":8080")
 }
 

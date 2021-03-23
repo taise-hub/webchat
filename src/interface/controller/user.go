@@ -8,7 +8,6 @@ import (
 	"gorm.io/gorm"
 )
 
-
 type UserController struct {
 	Usecase usecase.UserUsecase
 }

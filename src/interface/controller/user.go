@@ -22,7 +22,7 @@ func NewUserController(db *gorm.DB) *userController {
 	}
 }
 
-func (con *userController) GetByEmail(email string) (*model.User, error) {
+func (con *userController) getByEmail(email string) (*model.User, error) {
 	user, err :=con.Usecase.GetByEmail(email)
 	if err != nil {
 		return nil, err
@@ -63,7 +63,14 @@ func (con *userController) PostLogin(c *gin.Context) {
 		return
 	}
 	session := sessions.Default(c)
-	session.Set("userName", email)
+	session.Set("email", email)
 	session.Save()
-	c.HTML(200, "home.html", nil)
+	c.Redirect(302, "/home")
+}
+
+func (con *userController) GetHome(c *gin.Context) {
+	session := sessions.Default(c)
+	email := session.Get("email")
+	user, _ := con.getByEmail(email.(string))
+	c.HTML(200, "home.html", gin.H{"user": user})
 }

@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  app:
+    build: 
+      context: ./
+      dockerfile: Dockerfile
+    command: /bin/sh -c "go run main.go"
+    tty: true
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
+    environment:
+      MYSQL_DATABASE: chat_db
+      MYSQL_HOST: db
+      MYSQL_USER: arinc0s
+      MYSQL_PASSWORD: root
+    volumes:
+      - ./src:/app/src
+  
+  db:
+    image: mysql:5.7
+    environment: 
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: chat_db
+      MYSQL_USER: arinc0s
+      MYSQL_PASSWORD: root
+      TZ: 'Asia/Tokyo'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - db-store:/var/lib/mysql
+      - ./mysql/my.conf:/etc/mysql/conf.d/my.conf
+    expose: 
+      - 3306
+    
+volumes:
+  db-store:

@@ -1,7 +1,8 @@
-package controller
+package router
 
 import (
 	"github.com/taise-hub/webchat/src/usecase"
+	"github.com/taise-hub/webchat/src/interface/controller"
 	"gorm.io/gorm"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/sessions"
@@ -11,27 +12,33 @@ import (
 func Init(db *gorm.DB) {
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
-	userController := NewUserController(db)
+	userController := controller.NewUserController(db)
 	store := cookie.NewStore([]byte("secret"))
 	router.Use(sessions.Sessions("SSID", store))
 	hub := usecase.NewHub()
 	go hub.Run()
 
-	router.GET("/signup", userController.GetSignUp)
-	router.POST("/signup", userController.PostSignUp)
-	router.GET("/login", userController.GetLogin)
-	router.POST("/login", userController.PostLogin)
+	router.GET("/signup", GetSignUp)
+	router.POST("/signup", func(c *gin.Context) {
+		PostSignUp(c, userController)
+	})
+	router.GET("/login", GetLogin)
+	router.POST("/login", func(c *gin.Context) {
+		PostLogin(c, userController)
+	})
 
 	//service
 	service := router.Group("/home")
 	service.Use(LoginCheck)
 	{
-		service.GET("/", userController.GetHome)
-		service.POST("/logout", userController.Logout)
+		service.GET("/", func(c *gin.Context) {
+			GetHome(c, userController)
+		})
+		service.POST("/logout", Logout)
 		//web socket chat
-		service.GET("/chat", userController.GetChat)
+		service.GET("/chat", GetChat)
 		service.GET("/chat/ws", func(c *gin.Context) {
-			userController.WsChat(c, hub)
+			WsChat(c, userController, hub)
 		})
 	}
 

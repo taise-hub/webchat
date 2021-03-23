@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/taise-hub/webchat/src/domain/model"
 	"github.com/taise-hub/webchat/src/infrastructure"
-	"github.com/taise-hub/webchat/src/interface/controller"
+	"github.com/taise-hub/webchat/src/router"
 )
 
 func main() {
@@ -12,5 +12,5 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	controller.Init(db)
+	router.Init(db)
 }

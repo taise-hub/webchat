@@ -5,17 +5,17 @@ import (
 	"github.com/taise-hub/webchat/src/domain/model"
 )
 
-type MessageRepository struct {
+type messageRepository struct {
 	db *gorm.DB
 }
 
-func NewMessageRepository(db *gorm.DB) *MessageRepository {
-	return &MessageRepository {
+func NewMessageRepository(db *gorm.DB) *messageRepository {
+	return &messageRepository {
 		db: db,
 	}
 }
 
-func (rep *MessageRepository) Save(message *model.Message) error {
+func (rep *messageRepository) Save(message *model.Message) error {
 	result := rep.db.Create(message)
 	if result.Error != nil {
 		return result.Error

@@ -24,8 +24,7 @@ func Init(db *gorm.DB) {
 	service.Use(LoginCheck)
 	{
 		service.GET("/", userController.GetHome)
-		// service.POST("/logout", userController.PostLogout)
-		//Chat using websocket
+		service.POST("/logout", userController.Logout)
 	}
 
 	router.Run(":8080")

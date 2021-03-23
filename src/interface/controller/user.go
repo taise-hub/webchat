@@ -74,3 +74,10 @@ func (con *userController) GetHome(c *gin.Context) {
 	user, _ := con.getByEmail(email.(string))
 	c.HTML(200, "home.html", gin.H{"user": user})
 }
+
+func (con *userController) Logout(c *gin.Context) {
+	session := sessions.Default(c)
+	session.Clear()
+	session.Save()
+	c.Redirect(302, "/login")
+}

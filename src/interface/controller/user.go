@@ -7,6 +7,7 @@ import (
 	"github.com/taise-hub/webchat/src/interface/database"
 	"gorm.io/gorm"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/sessions"
 )
 
 type userController struct {
@@ -55,10 +56,14 @@ func (con *userController) PostLogin(c *gin.Context) {
 	ok, err := con.Usecase.Login(email, password)
 	if err != nil {
 		c.JSON(500, "Internal Server Error")
+		return
 	}
 	if !ok {
 		c.HTML(400, "login.html", nil)
+		return
 	}
-	//TODO: セッション管理を追加
+	session := sessions.Default(c)
+	session.Set("userName", email)
+	session.Save()
 	c.HTML(200, "home.html", nil)
 }

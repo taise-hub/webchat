@@ -1,6 +1,11 @@
 # webchat
 This is Simple WebChat using WebSocket.  
 This is implemented in accordance with clean architecture, so It's easy to extend function.(just I think so...)
+
+# Requirement
+I Confirmed operation with the following version.  
+- Docker version 20.10.5, build 55c4c88
+
 # DEMO 
 1.
 ```/bin/sh

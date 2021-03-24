@@ -41,6 +41,15 @@ func Init(db *gorm.DB) {
 		service.GET("/chat/ws", func(c *gin.Context) {
 			WsChat(c, userController, messageController, hub)
 		})
+		//[TEST]get messages
+		service.GET("/messages", func(c *gin.Context) {
+			msgs, err := messageController.GetAll()
+			if err != nil {
+				c.JSON(500, err)
+				return
+			}
+			c.JSON(200, msgs)
+		})
 	}
 	router.Run(":8080")
 }

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"github.com/taise-hub/webchat/src/domain/model"
 	"github.com/taise-hub/webchat/src/usecase"
 	"github.com/taise-hub/webchat/src/interface/database"
 	"gorm.io/gorm"
@@ -9,6 +10,7 @@ import (
 
 type MessageController interface {
 	Save(string, uint) bool
+	GetAll() (*model.Messages, error)
 }
 
 type messageController struct {
@@ -23,10 +25,18 @@ func NewMessageController(db *gorm.DB) *messageController {
 	}
 }
 
-func(con *messageController) Save(text string, userID uint) bool {
+func (con *messageController) Save(text string, userID uint) bool {
 	if err := con.usecase.Save(text, userID); err != nil {
 		fmt.Printf("%+v", err)
 		return false
 	}
 	return true
+}
+
+func (con *messageController) GetAll() (*model.Messages, error) {
+	messages, err := con.usecase.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	return messages, nil
 }

@@ -21,6 +21,14 @@ func (us *UserUsecase) GetByEmail(email string) (*model.User, error) {
 	return user, nil
 }
 
+func (us *UserUsecase) GetByID(id uint) (*model.User, error) {
+	user, err := us.Repository.GetByID(id)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 func (us *UserUsecase) Create(email string, name string, password string) error {
 	sha256pass := fmt.Sprintf("%x", sha256.Sum256([]byte(password)))
 	user := &model.User{

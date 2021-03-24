@@ -24,6 +24,15 @@ func (rep *userRepository) GetByEmail(email string) (*model.User, error) {
 	return user, nil
 }
 
+func (rep *userRepository) GetByID(id uint) (*model.User, error) {
+	user := &model.User{}
+	result := rep.db.First(user, id)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return user, nil
+}
+
 func (rep *userRepository) Create(user *model.User) error {
 	result := rep.db.Create(user)
 	if result.Error != nil {

@@ -21,7 +21,15 @@ func NewUserController(db *gorm.DB) *UserController {
 }
 
 func (con *UserController) GetByEmail(email string) (*model.User, error) {
-	user, err :=con.Usecase.GetByEmail(email)
+	user, err := con.Usecase.GetByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (con *UserController) GetByID(id uint) (*model.User, error) {
+	user, err := con.Usecase.GetByID(id)
 	if err != nil {
 		return nil, err
 	}

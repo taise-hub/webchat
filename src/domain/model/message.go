@@ -1,9 +1,9 @@
 package model
 
 type Message struct {
-	Id 	 int `gorm:"unique; not null"`
-	Text string
-	User *User `gorm:"not null"`
+	ID 	 	uint 	`gorm:"primaryKey; not null"`
+	Text 	string	
+	UserID 	uint 	`gorm:"not null"`
 }
 
 type Messages []Message

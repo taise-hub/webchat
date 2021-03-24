@@ -9,11 +9,10 @@ type MessageUsecase struct {
 	Repository repository.MessageRepository
 }
 
-func (uc *MessageUsecase) Save(text string, user *model.User) error {
+func (uc *MessageUsecase) Save(text string, userID uint) error {
 	message := &model.Message{
-		Id: 1,
 		Text: text,
-		User: user,
+		UserID: userID,
 	}
 	if err := uc.Repository.Save(message); err != nil {
 		return err

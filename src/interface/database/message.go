@@ -23,8 +23,8 @@ func (rep *messageRepository) Save(message *model.Message) error {
 	return nil
 }
 
-func (rep *messageRepository) GetAll() (*model.Messages, error) {
-	var messages model.Messages
+func (rep *messageRepository) GetAll() (*[]model.Message, error) {
+	var messages []model.Message
 	result := rep.db.Find(&messages)
 	if result.Error != nil {
 		return nil, result.Error

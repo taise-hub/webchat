@@ -20,7 +20,7 @@ func (uc *MessageUsecase) Save(text string, userID uint) error {
 	return nil
 }
 
-func (uc *MessageUsecase) GetAll() (*model.Messages, error) {
+func (uc *MessageUsecase) GetAll() (*[]model.Message, error) {
 	messages, err := uc.Repository.GetAll()
 	if err != nil {
 		return nil, err

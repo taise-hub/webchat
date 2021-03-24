@@ -6,5 +6,5 @@ import (
 
 type MessageRepository interface{
 	Save(*model.Message) error
-	GetAll() (*model.Messages, error)
+	GetAll() (*[]model.Message, error)
 }

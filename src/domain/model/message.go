@@ -5,5 +5,3 @@ type Message struct {
 	Text 	string	
 	UserID 	uint 	`gorm:"not null"`
 }
-
-type Messages []Message

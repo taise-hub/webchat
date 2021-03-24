@@ -10,7 +10,7 @@ import (
 
 type MessageController interface {
 	Save(string, uint) bool
-	GetAll() (*model.Messages, error)
+	GetAll() (*[]model.Message, error)
 }
 
 type messageController struct {
@@ -33,7 +33,7 @@ func (con *messageController) Save(text string, userID uint) bool {
 	return true
 }
 
-func (con *messageController) GetAll() (*model.Messages, error) {
+func (con *messageController) GetAll() (*[]model.Message, error) {
 	messages, err := con.usecase.GetAll()
 	if err != nil {
 		return nil, err

@@ -19,6 +19,7 @@ func Init(db *gorm.DB) {
 	hub := chat.NewHub()
 	go hub.Run()
 
+	router.GET("/", GetRoot)
 	router.GET("/signup", GetSignUp)
 	router.POST("/signup", func(c *gin.Context) {
 		PostSignUp(c, userController)

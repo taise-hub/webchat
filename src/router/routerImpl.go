@@ -8,6 +8,10 @@ import (
 	"github.com/gin-contrib/sessions"
 )
 
+func GetRoot(c *gin.Context) {
+	c.Redirect(302, "/home")
+}
+
 func GetSignUp(c *gin.Context) {
 	c.HTML(200, "signup.html", nil)
 } 

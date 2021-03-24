@@ -37,7 +37,9 @@ func Init(db *gorm.DB) {
 		})
 		service.POST("/logout", Logout)
 		//web socket chat
-		service.GET("/chat", GetChat)
+		service.GET("/chat", func(c *gin.Context) {
+			GetChat(c, userController, messageController)
+		})
 		service.GET("/chat/ws", func(c *gin.Context) {
 			WsChat(c, userController, messageController, hub)
 		})

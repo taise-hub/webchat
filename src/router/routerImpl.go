@@ -60,8 +60,23 @@ func Logout(c *gin.Context) {
 	c.Redirect(302, "/login")
 }
 
-func GetChat(c *gin.Context) {
-	c.HTML(200, "chat.html", nil)
+func GetChat(c *gin.Context, uCon *controller.UserController, mCon controller.MessageController) {
+	msgs, err := mCon.GetAll()
+	if err != nil {
+		c.JSON(500, err)
+		return
+	}
+	var messages []string
+	for _, msg := range *msgs {
+		user, err := uCon.GetByID(msg.UserID)
+		if err != nil {
+			c.JSON(500, err)
+			return
+		}
+		message := fmt.Sprintf("【%s】: %s", user.Name, msg.Text)
+		messages = append(messages, message)
+	}
+	c.HTML(200, "chat.html", gin.H{"messages": messages})
 }
 
 func WsChat(c *gin.Context, uCon *controller.UserController, mCon controller.MessageController, hub *chat.Hub) {

@@ -3,10 +3,20 @@ package controller
 import (
 	"fmt"
 	"github.com/taise-hub/webchat/src/usecase"
+	"github.com/taise-hub/webchat/src/interface/database"
+	"gorm.io/gorm"
 )
 
 type messageController struct {
 	usecase usecase.MessageUsecase
+}
+
+func NewMessageController(db *gorm.DB) *messageController {
+	return &messageController {
+		usecase: usecase.MessageUsecase {
+			Repository: database.NewMessageRepository(db),
+		},
+	}
 }
 
 func(con *messageController) Save(text string, userID uint) bool {

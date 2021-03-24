@@ -2,6 +2,8 @@ package chat
 
 import(
 	"fmt"
+	"github.com/taise-hub/webchat/src/domain/model"
+	"github.com/taise-hub/webchat/src/interface/controller"
 	"github.com/gorilla/websocket"
 )
 
@@ -17,14 +19,18 @@ type Client struct{
 }
 
 //あるクライアントからのメッセージをListenしHubに流す。
-func (c *Client) Listen(name string) {
+func (c *Client) Listen(user *model.User, msgCon controller.MessageController) {
 	for {
 		_, p, err := c.Conn.ReadMessage()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		msg := fmt.Sprintf("【%s】: %s", name, p)
+		text := fmt.Sprintf("%s", p)
+		if ok := msgCon.Save(text, user.ID); !ok {
+			return
+		}
+		msg := fmt.Sprintf("【%s】: %s", user.Name, p)
 		p = []byte(msg)
 		c.Hub.Broadcast <- p
 	}

@@ -7,6 +7,10 @@ import (
 	"gorm.io/gorm"
 )
 
+type MessageController interface {
+	Save(string, uint) bool
+}
+
 type messageController struct {
 	usecase usecase.MessageUsecase
 }

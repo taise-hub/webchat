@@ -13,6 +13,7 @@ func Init(db *gorm.DB) {
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
 	userController := controller.NewUserController(db)
+	messageController := controller.NewMessageController(db)
 	store := cookie.NewStore([]byte("secret"))
 	router.Use(sessions.Sessions("SSID", store))
 	hub := chat.NewHub()
@@ -38,7 +39,7 @@ func Init(db *gorm.DB) {
 		//web socket chat
 		service.GET("/chat", GetChat)
 		service.GET("/chat/ws", func(c *gin.Context) {
-			WsChat(c, userController, hub)
+			WsChat(c, userController, messageController, hub)
 		})
 	}
 	router.Run(":8080")

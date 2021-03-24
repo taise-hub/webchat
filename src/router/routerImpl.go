@@ -64,7 +64,7 @@ func GetChat(c *gin.Context) {
 	c.HTML(200, "chat.html", nil)
 }
 
-func WsChat(c *gin.Context, uCon *controller.UserController , hub *chat.Hub) {
+func WsChat(c *gin.Context, uCon *controller.UserController, mCon controller.MessageController, hub *chat.Hub) {
 	conn, err := chat.Upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		fmt.Println(err)
@@ -75,6 +75,6 @@ func WsChat(c *gin.Context, uCon *controller.UserController , hub *chat.Hub) {
 	//clientがconn.ReadMessage()したら、hubに通知して各clientに流し込む.
 	session := sessions.Default(c)
 	user, _ := uCon.GetByEmail(session.Get("email").(string))
-	go client.Listen(user.Name)
+	go client.Listen(user, mCon)
 	go client.Write()
 }

@@ -3,6 +3,7 @@ package chat
 import(
 	"fmt"
 	"github.com/taise-hub/webchat/src/domain/model"
+	"github.com/taise-hub/webchat/src/imakita"
 	"github.com/taise-hub/webchat/src/interface/controller"
 	"github.com/gorilla/websocket"
 )
@@ -24,11 +25,26 @@ func (c *Client) Listen(user *model.User, msgCon controller.MessageController) {
 		_, p, err := c.Conn.ReadMessage()
 		if err != nil {
 			fmt.Println(err)
-			return
+			continue
 		}
 		text := fmt.Sprintf("%s", p)
 		if ok := msgCon.Save(text, user.ID); !ok {
-			return
+			continue
+		}
+		if text == "今北産業" {
+			msg := fmt.Sprintf("【%s】: %s", user.Name, p)
+			p = []byte(msg)
+			c.Hub.Broadcast <- p
+			msgs, err := msgCon.GetAll()
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			sentence := ""
+			for _, msg := range *msgs {
+				sentence += msg.Text
+			}
+			imakitaController(c, sentence)
 		}
 		msg := fmt.Sprintf("【%s】: %s", user.Name, p)
 		p = []byte(msg)
@@ -47,3 +63,19 @@ func (c *Client) Write() {
 		}
 	}
 }
+
+func imakitaController(c *Client, sentence string) {
+	imakita, err := imakita.Imakita(sentence)
+	if err != nil {
+		fmt.Printf("%s", err)
+		return
+	}
+	for i, s := range imakita {
+		s = "【今北ボット】: " + s
+		p := []byte(s)
+		c.Hub.Broadcast <- p
+		if i == 2 {
+			return
+		}
+	}
+} 

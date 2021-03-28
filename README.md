@@ -6,7 +6,10 @@ This is implemented in accordance with clean architecture, so It's easy to exten
 I confirmed operation with the following version.  
 - Docker version 20.10.5, build 55c4c88
 
-# DEMO 
+# DEMO
+![gif](./webchat.gif)
+
+# Try
 1.
 ```/bin/sh
 % git clone https://github.com/taise-hub/webchat.git

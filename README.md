@@ -7,7 +7,7 @@ I confirmed operation with the following version.
 - Docker version 20.10.5, build 55c4c88
 
 # DEMO
-![gif](./webchat.gif)
+![webchat](./webchat.gif)
 
 # Try
 1.

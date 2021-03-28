@@ -25,12 +25,9 @@ func (c *Client) Listen(user *model.User, msgCon controller.MessageController) {
 		_, p, err := c.Conn.ReadMessage()
 		if err != nil {
 			fmt.Println(err)
-			continue
+			return
 		}
 		text := fmt.Sprintf("%s", p)
-		if ok := msgCon.Save(text, user.ID); !ok {
-			continue
-		}
 		if text == "今北産業" {
 			msg := fmt.Sprintf("【%s】: %s", user.Name, p)
 			p = []byte(msg)
@@ -42,9 +39,13 @@ func (c *Client) Listen(user *model.User, msgCon controller.MessageController) {
 			}
 			sentence := ""
 			for _, msg := range *msgs {
-				sentence += msg.Text
+				sentence += msg.Text + ", "
 			}
 			imakitaController(c, sentence)
+			continue
+		}
+		if ok := msgCon.Save(text, user.ID); !ok {
+			return
 		}
 		msg := fmt.Sprintf("【%s】: %s", user.Name, p)
 		p = []byte(msg)
@@ -71,7 +72,7 @@ func imakitaController(c *Client, sentence string) {
 		return
 	}
 	for i, s := range imakita {
-		s = "【今北ボット】: " + s
+		s = "【今北産業】: " + s
 		p := []byte(s)
 		c.Hub.Broadcast <- p
 		if i == 2 {
